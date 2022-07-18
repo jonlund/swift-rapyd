@@ -81,3 +81,28 @@ public struct GetCountries: RapydEndpoint {
 		return "data/countries"
 	}
 }
+
+public struct GetCurrency: RapydEndpoint {
+	public static var method: HTTPMethod { .GET }
+	public typealias inputType = Empty
+	public typealias outputType = Output
+	public typealias paramType = Params
+	static public func endpoint(for inputs: paramType) throws -> String {
+		return "issuing/bankaccounts/capabilities/country=\(inputs.country)&currency=\(inputs.currency)"
+	}
+	
+	public struct Params {
+		let country: String
+		let currency: String
+		
+		public init(country: String, currency: String) {
+			self.country = country
+			self.currency = currency
+		}
+	}
+
+	public struct Output: Codable {
+		let country: String
+		let supported_currencies: [String]
+	}
+}
