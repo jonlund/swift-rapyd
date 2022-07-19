@@ -11,7 +11,7 @@
 
 public typealias WalletId = String
 
-public struct ListBankAccounts: RapydEndpoint {
+public struct ListVirtualAccounts: RapydEndpoint {
 	public static var method: HTTPMethod { .GET }
 	public typealias inputType = Empty
 	public typealias outputType = [PaymentMethod]
