@@ -6,6 +6,29 @@
 //
 
 
+// MARK: - Methods
+
+
+public typealias WalletId = String
+
+public struct ListBankAccounts: RapydEndpoint {
+	public static var method: HTTPMethod { .GET }
+	public typealias inputType = Empty
+	public typealias outputType = [PaymentMethod]
+	public typealias paramType = WalletId
+	static public func endpoint(for inputs: WalletId) throws -> String {
+		return "issuing/bankaccounts/list?ewallet=\(inputs)"
+	}
+	
+	public struct Output: Codable {
+		let ewallet: WalletId
+		let bank_accounts: [BankAccount]
+	}
+}
+
+
+// MARK: - Data Structures
+
 public struct BankAccount: Codable {
 	public let account_id: String			// "DK1989000092780494",
 	public let account_id_type: String		// "iban",
