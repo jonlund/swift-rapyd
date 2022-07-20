@@ -14,7 +14,7 @@ public typealias WalletId = String
 public struct ListVirtualAccounts: RapydEndpoint {
 	public static var method: HTTPMethod { .GET }
 	public typealias inputType = Empty
-	public typealias outputType = [PaymentMethod]
+	public typealias outputType = Output
 	public typealias paramType = WalletId
 	static public func endpoint(for inputs: WalletId) throws -> String {
 		return "issuing/bankaccounts/list?ewallet=\(inputs)"
