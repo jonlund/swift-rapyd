@@ -163,8 +163,108 @@ public struct GetPayoutRequiredFieds: RapydEndpoint {
 	}
 }
 
+public struct CreatePayout: RapydEndpoint {
+	public static var method: HTTPMethod { .POST }
+	public typealias inputType = Input
+	public typealias outputType = AnyCodable
+	public typealias paramType = Empty
+	static public func endpoint(for inputs: Empty) throws -> String {
+		return "payouts"
+	}
+	
+	public struct Input: Codable {
+		public let beneficiary: PayoutBeneficiary
+		public let beneficiary_country: String?
+		public let beneficiary_entity_type: EntityType
+		public let confirm_automatically: Bool?
+		public let description: String?
+		public let expiration: String?
+		public let ewallet: String?
+		public let merchant_reference_id: String?
+		public let metadata: AnyCodable?
+		public let payout_amount: String
+		public let payout_currency: String
+		public let payout_fees: [AnyCodable]?
+		public let payout_method_type: MethodType?
+		public let sender: PayoutSender
+		public let sender_amount: Float?
+		public let sender_country: String
+		public let sender_currency: String
+		public let sender_entity_type: EntityType
+		public let statement_descriptor: String?
+		
+		public init(
+			beneficiary: PayoutBeneficiary,
+			beneficiary_country: String? = nil,
+			beneficiary_entity_type: EntityType,
+			confirm_automatically: Bool? = nil,
+			description: String? = nil,
+			expiration: String? = nil,
+			ewallet: String? = nil,
+			merchant_reference_id: String? = nil,
+			metadata: AnyCodable? = nil,
+			payout_amount: String,
+			payout_currency: String,
+			payout_fees: [AnyCodable]? = nil,
+			payout_method_type: MethodType? = nil,
+			sender: PayoutSender,
+			sender_amount: Float? = nil,
+			sender_country: String,
+			sender_currency: String,
+			sender_entity_type: EntityType,
+			statement_descriptor: String? = nil
+		) {
+			self.beneficiary = beneficiary
+			self.beneficiary_country = beneficiary_country
+			self.beneficiary_entity_type = beneficiary_entity_type
+			self.confirm_automatically = confirm_automatically
+			self.description = description
+			self.expiration = expiration
+			self.ewallet = ewallet
+			self.merchant_reference_id = merchant_reference_id
+			self.metadata = metadata
+			self.payout_amount = payout_amount
+			self.payout_currency = payout_currency
+			self.payout_fees = payout_fees
+			self.payout_method_type = payout_method_type
+			self.sender = sender
+			self.sender_amount = sender_amount
+			self.sender_country = sender_country
+			self.sender_currency = sender_currency
+			self.sender_entity_type = sender_entity_type
+			self.statement_descriptor = statement_descriptor
+		}
+	}
+}
+
 
 // MARK: - Data Structures
+
+public enum BankAccountType: String, Codable {
+	case CHECKING, SAVING
+}
+
+public struct PayoutBeneficiary: Codable {
+	public let company_name: String
+	public let bank_account_type: BankAccountType
+	public let account_number: Int
+	public let aba: Int
+	
+	public init(company_name: String, bank_account_type: BankAccountType, account_number: Int, aba: Int) {
+		self.company_name = company_name
+		self.bank_account_type = bank_account_type
+		self.account_number = account_number
+		self.aba = aba
+	}
+}
+
+public struct PayoutSender: Codable {
+	public let company_name: String
+	
+	public init(company_name: String) {
+		self.company_name = company_name
+	}
+}
 
 public enum PayoutType: String, Codable {
 	case bank, card, cash, rapyd_ewallet, ewallet
@@ -281,12 +381,23 @@ extension Wallet {
 			case add_funds
 			case payout_funds_out
 			case bank_issuing_in
+			case payout_funds_in
 			
 			public var description: String {
 				switch self {
 				case .add_funds:				return "Deposit"
 				case .payout_funds_out:			return "Disbursement"
 				case .bank_issuing_in:			return "Transfer from Bank"
+				case .payout_funds_in:			return "Cancelled Payout"
+				}
+			}
+			
+			public var isDebit: Bool {
+				switch self {
+				case .add_funds, .payout_funds_in, .bank_issuing_in:
+					return true
+				case .payout_funds_out:
+					return false
 				}
 			}
 		}
