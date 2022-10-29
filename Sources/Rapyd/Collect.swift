@@ -59,53 +59,94 @@ public struct GetPaymentMethods: RapydEndpoint {
 	}
 }
 
+public struct GetCheckoutPage: RapydEndpoint {
+	public static var method: HTTPMethod { .GET }
+	public typealias inputType = Empty
+	public typealias outputType = CheckoutPage
+	public typealias paramType = String
+	static public func endpoint(for inputs: paramType) throws -> String {
+		return "checkout/\(inputs)"
+	}
+}
+
+public struct CreateCheckoutPage: RapydEndpoint {
+	public static var method: HTTPMethod { .POST }
+	public typealias inputType = CheckoutPage
+	public typealias outputType = CheckoutPage
+	public typealias paramType = Empty
+	static public func endpoint(for inputs: paramType) throws -> String {
+		return "checkout"
+	}
+}
+
 
 // MARK: - Data Structures
 
+public struct CartItem: Codable {
+	///  - The name of the item. Required.
+	public let name: String
+	
+	///  - The price of the item in the currency defined in currency. Required.
+	public let amount: String
+	
+	///  - The quantity of the item. Required.
+	public let quantity: Int
+	
+	///  - The image that appears in the checkout page for this item.
+	public var image: String?
+	
+	public init(name: String, amount: String, quantity: Int, image: String? = nil) {
+		self.name = name
+		self.amount = amount
+		self.quantity = quantity
+		self.image = image
+	}
+}
+
 
 public struct PaymentMethodData: Codable {
-	public let id: String							// "other_46330fec2963b746f406378601de1ee5",
-	public let type: String							// "us_sameday_ach_bank",
-	public let image: String						// "",
-	public let category: String						// "bank_transfer",
+	public let id: String?							// "other_46330fec2963b746f406378601de1ee5",
+	public let type: String?						// "us_sameday_ach_bank",
+	public let image: String?						// "",
+	public let category: String?					// "bank_transfer",
 													//public let metadata: String						// {},
-	public let bic_swift: String					// "",
-	public let next_action: String					// "not_applicable",
-	public let webhook_url: String					// "",
-	public let account_type: String					// "CHECKING",
-	public let account_last4: String				// "",
-	public let account_number: String				// "123456789",
-	public let routing_number: String				// "124000054",
-	public let proof_of_authorization: Bool			// false,
-	public let supporting_documentation: String		// ""
+	public let bic_swift: String?					// "",
+	public let next_action: String?					// "not_applicable",
+	public let webhook_url: String?					// "",
+	public let account_type: String?				// "CHECKING",
+	public let account_last4: String?				// "",
+	public let account_number: String?				// "123456789",
+	public let routing_number: String?				// "124000054",
+	public let proof_of_authorization: Bool?		// false,
+	public let supporting_documentation: String?	// ""
 }
 
 public struct Payment: Codable {
-	public let id: String
-	public let paid: Bool
-	public let amount: Int
-	public let country_code: String
-	public let description: String
-	public let ewallet_id: String
-	public let captured: Bool
-	public let created_at: Int
-	public let expiration: Int
-	public let currency_code: String
-	public let customer_token: String					// "cus_a4117bd598c8050f6da4b278c5f5affc",
-	public let payment_method: String					// "other_46330fec2963b746f406378601de1ee5",
-	public let receipt_number: String					// "",
-	public let transaction_id: String					// "",
-	public let failure_message: String					// "",
-	public let initiation_type: String					// "customer_present",
-	public let original_amount: Int						// 743,
-	public let refunded_amount: Int						// 0,
-	public let error_payment_url: String				// "https://sandboxcheckout.rapyd.net/thank-you-failed/checkout_5f833719c82be8ffb5da14ee85c92942",
-	public let payment_method_data: PaymentMethodData
-	public let payment_method_type: String				// "us_sameday_ach_bank",
-	public let complete_payment_url: String				// "https://sandboxcheckout.rapyd.net/thank-you-success/checkout_5f833719c82be8ffb5da14ee85c92942",
-	public let statement_descriptor: String				// "N/A",
-	public let merchant_reference_id: String			// "USWNTvsCANADA",
-	public let payment_method_type_category: String		// "bank_transfer"
+	public let id: String?
+	public let paid: Bool?
+	public let amount: Int?
+	public let country_code: String?
+	public let description: String?
+	public let ewallet_id: String?
+	public let captured: Bool?
+	public let created_at: Int?
+	public let expiration: Int?
+	public let currency_code: String?
+	public let customer_token: String?					// "cus_a4117bd598c8050f6da4b278c5f5affc",
+	public let payment_method: String?					// "other_46330fec2963b746f406378601de1ee5",
+	public let receipt_number: String?					// "",
+	public let transaction_id: String?					// "",
+	public let failure_message: String?					// "",
+	public let initiation_type: String?					// "customer_present",
+	public let original_amount: Int?					// 743,
+	public let refunded_amount: Int?					// 0,
+	public let error_payment_url: String?				// "https://sandboxcheckout.rapyd.net/thank-you-failed/checkout_5f833719c82be8ffb5da14ee85c92942",
+	public let payment_method_data: PaymentMethodData?
+	public let payment_method_type: String?				// "us_sameday_ach_bank",
+	public let complete_payment_url: String?			// "https://sandboxcheckout.rapyd.net/thank-you-success/checkout_5f833719c82be8ffb5da14ee85c92942",
+	public let statement_descriptor: String?			// "N/A",
+	public let merchant_reference_id: String?			// "USWNTvsCANADA",
+	public let payment_method_type_category: String?	// "bank_transfer"
 														//"payment_method_options": {},
 														//"merchant_requested_amount": null,
 														//"merchant_requested_currency": null,
