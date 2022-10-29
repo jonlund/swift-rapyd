@@ -5,13 +5,46 @@
 //  Created by Jon Lund on 10/29/22.
 //
 
+public struct CodableDecimal: Codable {
+	let decimalPlaces: Int?
+	public let value: Float
+	
+	public init(floatValue: Float, decimalPlaces: Int) {
+		self.value = floatValue
+		self.decimalPlaces = decimalPlaces
+	}
+	
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.singleValueContainer()
+		if let iValue = try? container.decode(Int.self) {
+			value = Float(iValue)
+		}
+		else {
+			value = try container.decode(Float.self)
+		}
+		decimalPlaces = nil
+	}
+	
+	public func encode(to encoder: Encoder) throws {
+		var container = encoder.singleValueContainer()
+		let places: Int = decimalPlaces ?? 2
+		let str = String(format: "%.0\(places)f", value)
+		if str.hasSuffix(".00") {
+			let iVal = Int(value + 0.00000001)
+			try container.encode(iVal)
+		}
+		else {
+			try container.encode(str)
+		}
+	}
+}
 
 
 /// Data structure for a checkout page (see https://docs.rapyd.net/build-with-rapyd/reference/checkout-page#create-checkout-page)
 public struct CheckoutPage: Codable {
 	
 	/// The amount of the payment, in units of the currency defined in currency. Decimal.
-	public let amount: Int
+	public let amount: CodableDecimal
 	
 	/// The two-letter ISO 3166-1 ALPHA-2 code for the country. Uppercase.
 	public let country: String
@@ -215,7 +248,7 @@ public struct CheckoutPage: Codable {
 	
 
 	
-	public init(amount: Int, country: String, currency: String) {
+	public init(amount: CodableDecimal, country: String, currency: String) {
 		self.amount		= amount
 		self.country	= country
 		self.currency	= currency
