@@ -5,6 +5,8 @@
 //  Created by Jon Lund on 10/29/22.
 //
 
+
+/// Data structure that can flexibly encode/decode numbers for currency amounts
 public struct CodableDecimal: Codable {
 	let decimalPlaces: Int?
 	public let value: Float

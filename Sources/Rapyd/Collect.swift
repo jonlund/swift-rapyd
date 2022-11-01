@@ -124,7 +124,7 @@ public struct PaymentMethodData: Codable {
 public struct Payment: Codable {
 	public let id: String?
 	public let paid: Bool?
-	public let amount: Int?
+	public let amount: CodableDecimal?
 	public let country_code: String?
 	public let description: String?
 	public let ewallet_id: String?
@@ -138,8 +138,8 @@ public struct Payment: Codable {
 	public let transaction_id: String?					// "",
 	public let failure_message: String?					// "",
 	public let initiation_type: String?					// "customer_present",
-	public let original_amount: Int?					// 743,
-	public let refunded_amount: Int?					// 0,
+	public let original_amount: CodableDecimal?					// 743,
+	public let refunded_amount: CodableDecimal?					// 0,
 	public let error_payment_url: String?				// "https://sandboxcheckout.rapyd.net/thank-you-failed/checkout_5f833719c82be8ffb5da14ee85c92942",
 	public let payment_method_data: PaymentMethodData?
 	public let payment_method_type: String?				// "us_sameday_ach_bank",
